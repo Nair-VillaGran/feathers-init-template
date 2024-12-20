@@ -2,6 +2,7 @@ export async function up(knex) {
   await knex.schema.createTable('users', (table) => {
     table.increments('id').primary()
     table.string('email').unique()
+    table.enum('role', ['admin', 'user']).defaultTo('user')
     table.string('password')
     table.string('googleId')
     table.string('facebookId')

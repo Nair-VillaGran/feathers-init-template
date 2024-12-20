@@ -13,6 +13,7 @@ import {
   userQueryResolver
 } from './users.schema.js'
 import { UserService, getOptions } from './users.class.js'
+import { authorize } from '../../hooks/authorize.js'
 
 export const userPath = 'users'
 export const userMethods = ['find', 'get', 'create', 'patch', 'remove']
@@ -43,10 +44,19 @@ export const user = (app) => {
     before: {
       all: [schemaHooks.validateQuery(userQueryValidator), schemaHooks.resolveQuery(userQueryResolver)],
       find: [],
-      get: [],
-      create: [schemaHooks.validateData(userDataValidator), schemaHooks.resolveData(userDataResolver)],
-      patch: [schemaHooks.validateData(userPatchValidator), schemaHooks.resolveData(userPatchResolver)],
-      remove: []
+      get: [
+        authorize('read')
+      ],
+      create: [
+        schemaHooks.validateData(userDataValidator),
+        schemaHooks.resolveData(userDataResolver)
+      ],
+      patch: [
+        authorize('update'),
+        schemaHooks.validateData(userPatchValidator),
+        schemaHooks.resolveData(userPatchResolver)
+      ],
+      remove: [authorize('delete')]
     },
     after: {
       all: []

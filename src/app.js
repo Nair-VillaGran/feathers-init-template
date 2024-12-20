@@ -10,6 +10,7 @@ import { database } from './database.js'
 import { authentication } from './authentication.js'
 import { services } from './services/index.js'
 import { channels } from './channels.js'
+import { extractUserFromToken } from './hooks/authentication-middleware.js'
 
 // Clear the console ( Optional )
 process.stdout.write('\x1Bc')
@@ -45,7 +46,13 @@ app.configure(channels)
 // Register hooks that run on all service methods
 app.hooks({
   around: {
-    all: [logError]
+    all: [
+      async (context, next) => {
+        await extractUserFromToken(context)
+        return next()
+      },
+      logError
+    ]
   },
   before: {},
   after: {},

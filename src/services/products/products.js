@@ -12,6 +12,7 @@ import {
   productsQueryResolver
 } from './products.schema.js'
 import { ProductsService, getOptions } from './products.class.js'
+import { authorize } from '../../hooks/authorize.js'
 
 export const productsPath = 'products'
 export const productsMethods = ['find', 'get', 'create', 'patch', 'remove']
@@ -41,17 +42,19 @@ export const products = (app) => {
         schemaHooks.validateQuery(productsQueryValidator),
         schemaHooks.resolveQuery(productsQueryResolver)
       ],
-      find: [],
-      get: [],
+      find: [authorize('read')],
+      get: [authorize('read')],
       create: [
+        authorize('create'),
         schemaHooks.validateData(productsDataValidator),
-        schemaHooks.resolveData(productsDataResolver),
+        schemaHooks.resolveData(productsDataResolver)
       ],
       patch: [
+        authorize('update'),
         schemaHooks.validateData(productsPatchValidator),
         schemaHooks.resolveData(productsPatchResolver)
       ],
-      remove: []
+      remove: [authorize('delete')]
     },
     after: {
       all: []

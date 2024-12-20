@@ -1,6 +1,6 @@
 // // For more information about this file see https://dove.feathersjs.com/guides/cli/service.schemas.html
 import { resolve } from '@feathersjs/schema'
-import { Type, getValidator, querySyntax } from '@feathersjs/typebox'
+import { StringEnum, Type, getValidator, querySyntax } from '@feathersjs/typebox'
 import { passwordHash } from '@feathersjs/authentication-local'
 import { dataValidator, queryValidator } from '../../validators.js'
 
@@ -10,6 +10,9 @@ export const userSchema = Type.Object(
     id: Type.Number(),
     email: Type.String(),
     password: Type.Optional(Type.String()),
+    role: StringEnum(['admin', 'user'], {
+      default: 'user'
+    }),
     googleId: Type.Optional(Type.String()),
     facebookId: Type.Optional(Type.String()),
     twitterId: Type.Optional(Type.String()),

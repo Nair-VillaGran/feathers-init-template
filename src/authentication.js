@@ -6,7 +6,9 @@ import { oauth, OAuthStrategy } from '@feathersjs/authentication-oauth'
 export const authentication = (app) => {
   const authentication = new AuthenticationService(app)
 
-  authentication.register('jwt', new JWTStrategy())
+  authentication.register('jwt', new JWTStrategy({
+    expiresIn: '1d'
+  }))
   authentication.register('local', new LocalStrategy())
   authentication.register('google', new OAuthStrategy())
   authentication.register('facebook', new OAuthStrategy())
